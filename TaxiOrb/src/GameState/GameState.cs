@@ -27,16 +27,15 @@
 
 		//Returns whether Update or Draw should be called
 		public virtual bool IsUpdatable() => Updatable;
+		public virtual void SetUpdatable(bool newValue) { Updatable = newValue; }
 		public virtual bool IsDrawable() => Drawable;
+		public virtual void SetDrawable(bool newValue) { Drawable = newValue; }
 
 		//Finished GameStates get removed
 		public virtual bool IsFinished() => Finished;
 		//If a NextState is set it will be put at the end of StateList -> will be drawn/updated on Top of others
 		public virtual GameState GetNextState() => NextState;
 
-		public void ResetNextState()
-		{
-			NextState = null;
-		}
+		public void ResetNextState() { NextState = null; }
 	}
 }
