@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2027
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaxiOrb", "TaxiOrb\TaxiOrb.csproj", "{57F9F644-5722-4B85-A106-26C7A278654C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{57F9F644-5722-4B85-A106-26C7A278654C}.Debug|x86.ActiveCfg = Debug|x86
+		{57F9F644-5722-4B85-A106-26C7A278654C}.Debug|x86.Build.0 = Debug|x86
+		{57F9F644-5722-4B85-A106-26C7A278654C}.Release|x86.ActiveCfg = Release|x86
+		{57F9F644-5722-4B85-A106-26C7A278654C}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7115142F-B5DE-495C-9D52-EEF5E7C957CD}
+	EndGlobalSection
+EndGlobal
