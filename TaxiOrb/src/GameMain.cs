@@ -22,6 +22,12 @@
 		public GameMain()
 		{
 			graphics = new GraphicsDeviceManager(this);
+			graphics.PreferMultiSampling = true;
+			graphics.PreferredBackBufferHeight = 720;
+			graphics.PreferredBackBufferWidth = 1280;
+			graphics.GraphicsProfile = GraphicsProfile.HiDef;
+			graphics.SynchronizeWithVerticalRetrace = true;
+			
 			Content.RootDirectory = "Content";
 		}
 
@@ -49,9 +55,20 @@
 			this.Services.AddService(spriteBatch);
 			this.Services.AddService(Content);
 
+			LoadBasicContent();
+
 			//InitState as first State for the game
 			StateList = new List<GameState.GameState> { new InitState(this) };
 
+		}
+
+		private void LoadBasicContent()
+		{
+			var pixel = new Texture2D(GraphicsDevice, 1, 1);
+			pixel.SetData(new[] { Color.White });
+			Resources.Pixel = pixel;
+
+			Resources.Font = Content.Load<SpriteFont>("font16");
 		}
 
 		/// <summary>

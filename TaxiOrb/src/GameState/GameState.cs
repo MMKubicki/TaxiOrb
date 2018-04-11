@@ -7,8 +7,8 @@
 	{
 		protected Game game;
 
-		protected bool Drawable;
-		protected bool Updatable;
+		protected bool Drawable = true;
+		protected bool Updatable = true;
 		protected bool Finished = false;
 		protected GameState NextState = null;
 

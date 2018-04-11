@@ -46,6 +46,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\GameState\GameState.cs" />
     <Compile Include="src\GameState\InitState.cs" />
+    <Compile Include="src\GameState\MainMenuState.cs" />
+    <Compile Include="src\Resources.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
