@@ -60,8 +60,8 @@
 				}
 			}
 
-			if ((_oldState.IsKeyUp(Keys.Enter) && keystate.IsKeyDown(Keys.Enter)) ||
-			    (_oldState.IsKeyUp(Keys.Space) && keystate.IsKeyDown(Keys.Space)))
+			if ((_oldState.IsKeyDown(Keys.Enter) && keystate.IsKeyUp(Keys.Enter)) ||
+			    (_oldState.IsKeyDown(Keys.Space) && keystate.IsKeyUp(Keys.Space)))
 			{
 				switch (_currentButton)
 				{
@@ -76,8 +76,8 @@
 
 					case HighlightedButton.Credits:
 
-						//TODO: Add credits
-
+						NextState = new CreditState(game, this);
+						Updatable = false;
 						break;
 				}
 			}

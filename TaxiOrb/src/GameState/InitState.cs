@@ -21,7 +21,12 @@
 		private string _animationText;
 		private float _animationTimeCounter;
 
-		private const int MinMillisecondsLoading = 2000;
+#if DEBUG
+		private const int MinMillisecondsLoading = 100;
+#else
+		private const int MinMillisecondsLoading = 4000;
+#endif
+
 
 		private float _pulseTime;
 
@@ -73,10 +78,8 @@
 			//Make this Method at least 4 Seconds long to see the cool LoadingScreen
 			var minWaitTime = Task.Run(() => Thread.Sleep(MinMillisecondsLoading));
 
-
-
 			//TODO: Load Content, Write Content to CollectionClass
-
+			Resources.AcaLogo = game.Content.Load<Texture2D>("acaLogo");
 
 
 			await minWaitTime.ConfigureAwait(true);

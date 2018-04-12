@@ -17,6 +17,8 @@
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
+			game.GraphicsDevice.Clear(Color.Blue);
+
 
 		}
 	}

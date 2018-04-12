@@ -96,7 +96,11 @@
 			for (var i = 0; i < currentStateCount; i++)
 			{
 				var nextState = _stateList[i].GetNextState();
-				if(nextState != null) _stateList.Add(nextState);
+				if (nextState != null)
+				{
+					_stateList.Add(nextState);
+					_stateList[i].ResetNextState();
+				}
 
 				if (!_stateList[i].IsFinished()) continue;
 				_stateList.RemoveAt(i);
