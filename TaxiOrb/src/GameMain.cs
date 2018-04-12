@@ -14,20 +14,24 @@
 	/// </summary>
 	public class GameMain : Game
 	{
-		GraphicsDeviceManager graphics;
-		SpriteBatch spriteBatch;
+		private readonly GraphicsDeviceManager _graphics;
+		private SpriteBatch _spriteBatch;
 
-		private List<GameState.GameState> StateList;
+		private List<GameState.GameState> _stateList;
+
+		private KeyboardState _oldState;
 
 		public GameMain()
 		{
-			graphics = new GraphicsDeviceManager(this);
-			graphics.PreferMultiSampling = true;
-			graphics.PreferredBackBufferHeight = 720;
-			graphics.PreferredBackBufferWidth = 1280;
-			graphics.GraphicsProfile = GraphicsProfile.HiDef;
-			graphics.SynchronizeWithVerticalRetrace = true;
-			
+			_graphics = new GraphicsDeviceManager(this)
+			{
+				PreferMultiSampling = true,
+				PreferredBackBufferHeight = 720,
+				PreferredBackBufferWidth = 1280,
+				GraphicsProfile = GraphicsProfile.HiDef,
+				SynchronizeWithVerticalRetrace = true
+			};
+
 			Content.RootDirectory = "Content";
 		}
 
@@ -39,6 +43,7 @@
 		/// </summary>
 		protected override void Initialize()
 		{
+			_oldState = Keyboard.GetState();
 			base.Initialize();
 		}
 
@@ -49,16 +54,16 @@
 		protected override void LoadContent()
 		{
 			// Create a new SpriteBatch, which can be used to draw textures.
-			spriteBatch = new SpriteBatch(GraphicsDevice);
+			_spriteBatch = new SpriteBatch(GraphicsDevice);
 
 			//Add spriteBatch and ContentManager to Services to easily reach them from the outside
-			this.Services.AddService(spriteBatch);
-			this.Services.AddService(Content);
+			Services.AddService(_spriteBatch);
+			Services.AddService(Content);
 
 			LoadBasicContent();
 
 			//InitState as first State for the game
-			StateList = new List<GameState.GameState> { new InitState(this) };
+			_stateList = new List<GameState.GameState> { new InitState(this) };
 
 		}
 
@@ -72,41 +77,39 @@
 		}
 
 		/// <summary>
-		/// UnloadContent will be called once per game and is the place to unload
-		/// game-specific content.
-		/// </summary>
-		protected override void UnloadContent()
-		{
-			// TODO: Unload any non ContentManager content here
-		}
-
-		/// <summary>
 		/// Allows the game to run logic such as updating the world,
 		/// checking for collisions, gathering input, and playing audio.
 		/// </summary>
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update(GameTime gameTime)
 		{
-			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+			if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) && _stateList.Last().GetType() != typeof(InitState))
 				Exit();
 
+			var keystate = Keyboard.GetState();
+
+			if(_oldState.IsKeyDown(Keys.F11) && keystate.IsKeyUp(Keys.F11))
+				_graphics.ToggleFullScreen();
+
 			//Check all GameStates whether they should be removed or add a new State 
-			var currentStateCount = StateList.Count;
+			var currentStateCount = _stateList.Count;
 			for (var i = 0; i < currentStateCount; i++)
 			{
-				var nextState = StateList[i].GetNextState();
-				if(nextState != null) StateList.Add(nextState);
+				var nextState = _stateList[i].GetNextState();
+				if(nextState != null) _stateList.Add(nextState);
 
-				if (!StateList[i].IsFinished()) continue;
-				StateList.RemoveAt(i);
+				if (!_stateList[i].IsFinished()) continue;
+				_stateList.RemoveAt(i);
 				currentStateCount--;
 			}
 
 			//Update all States
-			foreach (var gameState in StateList.Where(s => s.IsUpdatable()).ToList())
+			foreach (var gameState in _stateList.Where(s => s.IsUpdatable()).ToList())
 			{
 				gameState.Update(gameTime);
 			}
+
+			_oldState = keystate;
 
 			base.Update(gameTime);
 		}
@@ -120,9 +123,9 @@
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			//Draw all States
-			foreach (var gameState in StateList.Where(s => s.IsDrawable()).ToList())
+			foreach (var gameState in _stateList.Where(s => s.IsDrawable()).ToList())
 			{
-				gameState.Draw(spriteBatch);
+				gameState.Draw(_spriteBatch);
 			}
 
 			base.Draw(gameTime);

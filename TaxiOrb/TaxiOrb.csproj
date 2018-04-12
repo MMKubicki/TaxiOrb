@@ -47,6 +47,7 @@
     <Compile Include="src\GameState\GameState.cs" />
     <Compile Include="src\GameState\InitState.cs" />
     <Compile Include="src\GameState\MainMenuState.cs" />
+    <Compile Include="src\GameState\PlayState.cs" />
     <Compile Include="src\Resources.cs" />
   </ItemGroup>
   <ItemGroup>
