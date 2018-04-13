@@ -25,10 +25,8 @@
 		{
 			_graphics = new GraphicsDeviceManager(this)
 			{
-				PreferMultiSampling = true,
 				PreferredBackBufferHeight = 720,
 				PreferredBackBufferWidth = 1280,
-				GraphicsProfile = GraphicsProfile.HiDef,
 				SynchronizeWithVerticalRetrace = true
 			};
 
