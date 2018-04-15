@@ -21,6 +21,11 @@
 
 		private KeyboardState _oldState;
 
+        private Model taxiOrb;
+        private Model collectorOrb;
+        private Texture2D backround;
+    
+
 		public GameMain()
 		{
 			_graphics = new GraphicsDeviceManager(this)
@@ -54,11 +59,20 @@
 			// Create a new SpriteBatch, which can be used to draw textures.
 			_spriteBatch = new SpriteBatch(GraphicsDevice);
 
+          
+
+
 			//Add spriteBatch and ContentManager to Services to easily reach them from the outside
 			Services.AddService(_spriteBatch);
 			Services.AddService(Content);
 
-			LoadBasicContent();
+            //Loading Models
+            taxiOrb = Content.Load<Model>("taxiOrbModell");
+            collectorOrb = Content.Load<Model>("collectorOrbModell");
+            backround = Content.Load<Texture2D>("backround");
+
+
+            LoadBasicContent();
 
 			//InitState as first State for the game
 			_stateList = new List<GameState.GameState> { new InitState(this) };
@@ -116,6 +130,7 @@
 			base.Update(gameTime);
 		}
 
+        
 		/// <summary>
 		/// This is called when the game should draw itself.
 		/// </summary>
@@ -123,14 +138,17 @@
 		protected override void Draw(GameTime gameTime)
 		{
 			GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            
 			//Draw all States
 			foreach (var gameState in _stateList.Where(s => s.IsDrawable()).ToList())
 			{
 				gameState.Draw(_spriteBatch);
 			}
 
-			base.Draw(gameTime);
+       
+         
+
+            base.Draw(gameTime);
 		}
 	}
 }
