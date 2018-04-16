@@ -98,8 +98,8 @@
 		{
 			game.GraphicsDevice.Clear(Color.Blue);
            // DrawGround();
-            DrawModel(Resources.taxiOrb, world, view, projection);
-          DrawModel(Resources.collectorOrb, world, view, projection);
+           DrawModel(Resources.taxiOrb, world, view, projection);
+           DrawModel(Resources.collectorOrb, world, view, projection);
           
 
         }

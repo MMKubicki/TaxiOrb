@@ -75,9 +75,13 @@
 						break;
 
 					case HighlightedButton.Credits:
+#if DEBUG 
+                     NextState = new EndState(game);
+#else
+                        NextState = new CreditState(game, this);
+#endif             
+                        Updatable = false;
 
-						NextState = new CreditState(game, this);
-						Updatable = false;
 						break;
 				}
 			}
