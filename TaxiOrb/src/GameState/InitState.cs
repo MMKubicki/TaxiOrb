@@ -81,7 +81,13 @@
 			//TODO: Load Content, Write Content to CollectionClass
 			Resources.AcaLogo = game.Content.Load<Texture2D>("acaLogo");
 
-			await minWaitTime.ConfigureAwait(true);
+            //Loading Models
+            Resources.taxiOrb = game.Content.Load<Model>("taxiOrbModell");
+            Resources.collectorOrb = game.Content.Load<Model>("collectorOrbModell");
+            Resources.backround = game.Content.Load<Texture2D>("backround");
+
+
+            await minWaitTime.ConfigureAwait(true);
 
 			_currentState = InitStateState.Done;
 		}

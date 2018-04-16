@@ -45,6 +45,7 @@
     <Compile Include="src\GameMain.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\GameState\EndState.cs" />
     <Compile Include="src\GameState\GameState.cs" />
     <Compile Include="src\GameState\InitState.cs" />
     <Compile Include="src\GameState\MainMenuState.cs" />

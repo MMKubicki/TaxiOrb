@@ -21,9 +21,7 @@
 
 		private KeyboardState _oldState;
 
-        private Model taxiOrb;
-        private Model collectorOrb;
-        private Texture2D backround;
+   
     
 
 		public GameMain()
@@ -65,11 +63,6 @@
 			//Add spriteBatch and ContentManager to Services to easily reach them from the outside
 			Services.AddService(_spriteBatch);
 			Services.AddService(Content);
-
-            //Loading Models
-            taxiOrb = Content.Load<Model>("taxiOrbModell");
-            collectorOrb = Content.Load<Model>("collectorOrbModell");
-            backround = Content.Load<Texture2D>("backround");
 
 
             LoadBasicContent();
