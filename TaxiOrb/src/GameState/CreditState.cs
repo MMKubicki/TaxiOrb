@@ -1,7 +1,5 @@
 ﻿namespace TaxiOrb.GameState
 {
-	using System;
-
 	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Graphics;
 	using Microsoft.Xna.Framework.Input;
@@ -9,7 +7,7 @@
 	public class CreditState : GameState
 	{
 		private KeyboardState _oldState;
-		private GameState _parent;
+		private readonly GameState _parent;
 
 
 		public CreditState(Game game, GameState parent) : base(game)
@@ -45,7 +43,7 @@
 			spriteBatch.DrawString(Resources.Font, centerText, new Vector2((game.GraphicsDevice.Viewport.Width / 2f) - (textSize.X/2f),  (game.GraphicsDevice.Viewport.Height/2f) - (textSize.Y/2f)), Color.Black);
 
 			var acaLogo = Resources.AcaLogo;
-			var scale = 0.25f;
+			const float scale = 0.25f;
 			spriteBatch.Draw(acaLogo, new Rectangle(new Point(880,460), (new Vector2(acaLogo.Width, acaLogo.Height) * scale).ToPoint()), Color.White);
 
 			spriteBatch.End();

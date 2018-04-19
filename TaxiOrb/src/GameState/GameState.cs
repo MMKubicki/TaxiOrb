@@ -10,7 +10,7 @@
 		protected bool Drawable = true;
 		protected bool Updatable = true;
 		protected bool Finished = false;
-		protected GameState NextState = null;
+		protected GameState NextState;
 
 		//Constructor which takes the current Game-Object -> Game contains useful resources
 		protected GameState(Game game)

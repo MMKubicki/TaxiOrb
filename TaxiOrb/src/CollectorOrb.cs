@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TaxiOrb
+﻿namespace TaxiOrb
 {
 	using GameState;
 
@@ -13,19 +7,17 @@ namespace TaxiOrb
 
 	public class CollectorOrb
 	{
-		public bool IsFinished = false;
-		private Game _game;
+		public bool IsFinished;
 		public Vector3 Position;
-		private Model _model;
-		private PlayState _parent;
+		private readonly Model _model;
+		private readonly PlayState _parent;
 
-		private bool _dangerous = false;
-		private float _dangercountdown = 0f;
+		private bool _dangerous;
+		private float _dangerCountdown;
 
-		public CollectorOrb(Vector3 pos, Model model, PlayState parent, Game game)
+		public CollectorOrb(Vector3 position, Model model, PlayState parent)
 		{
-			Position = new Vector3(pos.X, pos.Y, 0.5f);
-			_game = game;
+			Position = new Vector3(position.X, position.Y, 0.5f);
 			_model = model;
 			_parent = parent;
 		}
@@ -34,22 +26,21 @@ namespace TaxiOrb
 		{
 			if (!_dangerous)
 			{
-				if (CheckCollision(this.Position, player.Position))
-				{
-					_parent.IncScore();
-					IsFinished = true;
-				}
+				if (!CheckCollision(Position, player.Position)) return;
+
+				_parent.IncScore();
+				IsFinished = true;
 			}
 			else
 			{
-				if (CheckCollision(this.Position, player.Position))
+				if (CheckCollision(Position, player.Position))
 				{
 					player.Throw();
 					IsFinished = true;
 				}
 
-				_dangercountdown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-				if (_dangercountdown <= 0)
+				_dangerCountdown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+				if (_dangerCountdown <= 0)
 					_dangerous = false;
 			}
 
@@ -63,22 +54,22 @@ namespace TaxiOrb
 			return (thisVector2 - thatVector2).Length() < 1.5f;
 		}
 
-		public void Draw(Vector3 camPos, float aspectRatio)
+		public void Draw(Vector3 camPosition, float aspectRatio)
 		{
 			foreach (var mesh in _model.Meshes)
 			{
-				foreach (BasicEffect effect in mesh.Effects)
+				foreach (var effect1 in mesh.Effects)
 				{
+					var effect = (BasicEffect) effect1;
+
 					effect.EnableDefaultLighting();
 					effect.PreferPerPixelLighting = true;
 
-					//effect.AmbientLightColor = new Vector3(0.75f,0,0.2f);
 					effect.DiffuseColor = _dangerous? new Vector3(0.85f, 0.282f, 0.372f) : new Vector3(0.6f, 0.5f, 0.8f);
 
 					effect.World = GetWorldMatrix();
 
-					effect.View = Matrix.CreateLookAt(camPos, Vector3.Zero, Vector3.UnitZ);
-					//effect.View
+					effect.View = Matrix.CreateLookAt(camPosition, Vector3.Zero, Vector3.UnitZ);
 
 					effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspectRatio, 0.1f, 2000);
 				}
@@ -97,7 +88,7 @@ namespace TaxiOrb
 
 		public void SetDangerous(float countdownInSeconds)
 		{
-			_dangercountdown = countdownInSeconds;
+			_dangerCountdown = countdownInSeconds;
 			_dangerous = true;
 		}
 	}

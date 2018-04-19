@@ -5,19 +5,19 @@
 
 	public class Ground
 	{
-		private VertexBuffer vertexBuffer;
-		private IndexBuffer indexBuffer;
+		private readonly VertexBuffer _vertexBuffer;
+		private readonly IndexBuffer _indexBuffer;
 
-		private BasicEffect effect;
-		private Matrix world;
-		private Matrix view;
-		private Matrix projection;
+		private readonly BasicEffect _effect;
+		private Matrix _world;
+		private Matrix _view;
+		private Matrix _projection;
 
 		public Ground(Game game)
 		{
-			effect = new BasicEffect(game.GraphicsDevice);
+			_effect = new BasicEffect(game.GraphicsDevice);
 
-			VertexPositionColor[] vertices = new VertexPositionColor[12];
+			var vertices = new VertexPositionColor[12];
 
 			vertices[0] = new VertexPositionColor(new Vector3(-21, -21, 0), Color.Blue);
 			vertices[1] = new VertexPositionColor(new Vector3(21, -21, 0), Color.Blue);
@@ -34,8 +34,8 @@
 			vertices[10] = new VertexPositionColor(new Vector3(21, -21, 0), Color.LightSteelBlue);
 			vertices[11] = new VertexPositionColor(new Vector3(21, 21, 0), Color.LightSteelBlue);
 
-			vertexBuffer = new VertexBuffer(game.GraphicsDevice, typeof(VertexPositionColor), 12, BufferUsage.WriteOnly);
-			vertexBuffer.SetData<VertexPositionColor>(vertices);
+			_vertexBuffer = new VertexBuffer(game.GraphicsDevice, typeof(VertexPositionColor), 12, BufferUsage.WriteOnly);
+			_vertexBuffer.SetData(vertices);
 
 			var indices = new short[18];
 			indices[0] = 0;
@@ -63,29 +63,29 @@
 			indices[16] = 9;
 			indices[17] = 11;
 
-			indexBuffer = new IndexBuffer(game.GraphicsDevice, typeof(short), indices.Length, BufferUsage.WriteOnly);
-			indexBuffer.SetData(indices);
+			_indexBuffer = new IndexBuffer(game.GraphicsDevice, typeof(short), indices.Length, BufferUsage.WriteOnly);
+			_indexBuffer.SetData(indices);
 		}
 
-		public void DrawGround(Vector3 camPos, Game game)
+		public void DrawGround(Vector3 camPosition, Game game)
 		{
-			world = Matrix.CreateTranslation(0, 0, 0);
-			view = Matrix.CreateLookAt(camPos, Vector3.Zero, Vector3.UnitZ);
-			projection =
+			_world = Matrix.CreateTranslation(0, 0, 0);
+			_view = Matrix.CreateLookAt(camPosition, Vector3.Zero, Vector3.UnitZ);
+			_projection =
 				Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, game.GraphicsDevice.Viewport.AspectRatio, 0.01f, 200);
 
-			effect.World = world;
-			effect.View = view;
-			effect.Projection = projection;
-			effect.VertexColorEnabled = true;
+			_effect.World = _world;
+			_effect.View = _view;
+			_effect.Projection = _projection;
+			_effect.VertexColorEnabled = true;
 
-			game.GraphicsDevice.SetVertexBuffer(vertexBuffer);
-			game.GraphicsDevice.Indices = indexBuffer;
+			game.GraphicsDevice.SetVertexBuffer(_vertexBuffer);
+			game.GraphicsDevice.Indices = _indexBuffer;
 
 			var rasterizerState = new RasterizerState {CullMode = CullMode.None};
 			game.GraphicsDevice.RasterizerState = rasterizerState;
 
-			foreach (var pass in effect.CurrentTechnique.Passes)
+			foreach (var pass in _effect.CurrentTechnique.Passes)
 			{
 				pass.Apply();
 				game.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0,0,6 );

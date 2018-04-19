@@ -10,47 +10,47 @@
 	public class PlayState : GameState
 	{
 
-		private PlayerOrb player;
-		private List<CollectorOrb> collectorOrbs;
-		private Ground ground;
+		private readonly PlayerOrb _player;
+		private List<CollectorOrb> _collectorOrbs;
+		private readonly Ground _ground;
 
-		private int collectedCounter = 0;
+		private int _collectedCounter;
 
-		private TimeSpan countdown;
+		private TimeSpan _countdown;
 
-		private const int BOUNDS = 20;
+		private const int Bounds = 20;
 
-		private Random _randomGen;
+		private readonly Random _randomGen;
 
         public PlayState(Game game) : base(game)
 		{
 			_randomGen = new Random();
-			ground = new Ground(game);
-            player = new PlayerOrb(new Vector2(0,0), game, Resources.TaxiOrb, this);
-			collectorOrbs = new List<CollectorOrb>();
-			generateCollectors(5);
-			countdown = new TimeSpan(0, 0, 31);
+			_ground = new Ground(game);
+            _player = new PlayerOrb(new Vector2(0,0), Resources.TaxiOrb, this);
+			_collectorOrbs = new List<CollectorOrb>();
+			GenerateCollectors(5);
+			_countdown = new TimeSpan(0, 0, 31);
 		}
 
 	    public override void Update(GameTime gameTime)
 	    {
-		    if (collectorOrbs.Count < 5)
+		    if (_collectorOrbs.Count < 5)
 		    {
-				generateCollectors(5 - collectorOrbs.Count);
+				GenerateCollectors(5 - _collectorOrbs.Count);
 		    }
 
-			player.Update(gameTime);
-		    foreach (var orb in collectorOrbs)
+			_player.Update(gameTime);
+		    foreach (var orb in _collectorOrbs)
 		    {
-			    orb.Update(gameTime, player);
+			    orb.Update(gameTime, _player);
 		    }
 
-		    collectorOrbs = collectorOrbs.Where(o => !o.IsFinished).ToList();
+		    _collectorOrbs = _collectorOrbs.Where(o => !o.IsFinished).ToList();
 
 
-		    countdown -= gameTime.ElapsedGameTime;
+		    _countdown -= gameTime.ElapsedGameTime;
 
-		    if (countdown.TotalMilliseconds <= 0)
+		    if (_countdown.TotalMilliseconds <= 0)
 		    {
 				TriggerEnd("Time is up", Color.Gray);
 		    }
@@ -58,7 +58,7 @@
 
 		public void TriggerEnd(string reason, Color color)
 		{
-			NextState = new EndState(game, collectedCounter, reason, color);
+			NextState = new EndState(game, _collectedCounter, reason, color);
 			Finished = true;
 		}
 
@@ -66,22 +66,21 @@
         {
 	        game.GraphicsDevice.Clear(Color.Blue);
 
-			var camPos = new Vector3(-35,35,30);
-			//var camPos = new Vector3(-40, 0, 40);
+			var camPosition = new Vector3(-35,35,30);
 
 			spriteBatch.Begin();
-			spriteBatch.Draw(Resources.backround, new Rectangle(0,0,1280,720 ), Color.White);
+			spriteBatch.Draw(Resources.Background, new Rectangle(0,0,1280,720 ), Color.White);
 			spriteBatch.End();
 
 	        game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-	        ground.DrawGround(camPos, game);
+	        _ground.DrawGround(camPosition, game);
 
-			foreach (var orb in collectorOrbs)
+			foreach (var orb in _collectorOrbs)
 	        {
-		        orb.Draw(camPos, game.GraphicsDevice.Viewport.AspectRatio);
+		        orb.Draw(camPosition, game.GraphicsDevice.Viewport.AspectRatio);
 	        }
-	        player.Draw(spriteBatch, game.GraphicsDevice.Viewport.AspectRatio, camPos);
+	        _player.Draw(spriteBatch, game.GraphicsDevice.Viewport.AspectRatio, camPosition);
 
 			DrawOverlay(spriteBatch);
 
@@ -91,45 +90,45 @@
 		{
 			spriteBatch.Begin();
 
-			spriteBatch.DrawString(Resources.Font, "Time: " + countdown.ToString(@"mm\:ss"), new Vector2(20), Color.White);
-			spriteBatch.DrawString(Resources.Font, "Collected: " + collectedCounter.ToString(), new Vector2(1080, 20), Color.White);
+			spriteBatch.DrawString(Resources.Font, "Time: " + _countdown.ToString(@"mm\:ss"), new Vector2(20), Color.White);
+			spriteBatch.DrawString(Resources.Font, "Collected: " + _collectedCounter.ToString(), new Vector2(1080, 20), Color.White);
 
 			spriteBatch.End();
 		}
 
-		private void generateCollectors(int count)
+		private void GenerateCollectors(int count)
 		{
 			for (var i = 0; i < count; i++)
 			{
-				var newOrb = new CollectorOrb(GetNewPosition(), Resources.TaxiOrb, this, game);
+				var newOrb = new CollectorOrb(GetNewPosition(), Resources.TaxiOrb, this);
 				if(_randomGen.NextDouble() < 0.27)
 					newOrb.SetDangerous(_randomGen.Next(0, 8));
-				collectorOrbs.Add(newOrb);
+				_collectorOrbs.Add(newOrb);
 			}
 		}
 
 		private Vector3 GetNewPosition()
 		{
 
-			Vector3 newVec;
+			Vector3 newVector3;
 
 			do
 			{
-				var xPosNeg = _randomGen.Next() % 2 == 0;
-				var yPosNeg = _randomGen.Next() % 2 == 0;
+				var xPositionNeg = _randomGen.Next() % 2 == 0;
+				var yPositionNeg = _randomGen.Next() % 2 == 0;
 
-				newVec = new Vector3((float) _randomGen.NextDouble() * BOUNDS * (xPosNeg ? 1 : -1),
-					(float) _randomGen.NextDouble() * BOUNDS * (yPosNeg ? 1 : -1), 0.5f);
-			} while (!CheckDistances(newVec));
+				newVector3 = new Vector3((float) _randomGen.NextDouble() * Bounds * (xPositionNeg ? 1 : -1),
+					(float) _randomGen.NextDouble() * Bounds * (yPositionNeg ? 1 : -1), 0.5f);
+			} while (!CheckDistances(newVector3));
 
-			return newVec;
+			return newVector3;
 		}
 
 		private bool CheckDistances(Vector3 check)
 		{
-			if ((player.Position - check).Length() < 5)
+			if ((_player.Position - check).Length() < 5)
 				return false;
-			foreach (var orb in collectorOrbs)
+			foreach (var orb in _collectorOrbs)
 			{
 				if ((orb.Position - check).Length() < 5)
 					return false;
@@ -140,7 +139,7 @@
 
 		public void IncScore()
 		{
-			collectedCounter++;
+			_collectedCounter++;
 		}
 	}
 }

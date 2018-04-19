@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-
-namespace TaxiOrb.GameState
+﻿namespace TaxiOrb.GameState
 {
-  public  class EndState : GameState
+	using Microsoft.Xna.Framework;
+	using Microsoft.Xna.Framework.Graphics;
+	using Microsoft.Xna.Framework.Input;
+
+	public  class EndState : GameState
     {
         private KeyboardState _oldState;
 
-	    private string _reason;
-	    private int _score;
-	    private Color _screenColor;
+	    private readonly string _reason;
+	    private readonly int _score;
+	    private readonly Color _screenColor;
 
         public EndState(Game game, int score, string reason, Color screenColor) : base(game)
         {
@@ -35,7 +30,7 @@ namespace TaxiOrb.GameState
             spriteBatch.DrawString(Resources.Font, $"Score: {_score}", new Vector2(100, 200), Color.White.Minus(_screenColor));
 
             var acaLogo = Resources.AcaLogo;
-            var scale = 0.25f;
+            const float scale = 0.25f;
 
             spriteBatch.Draw(acaLogo, new Rectangle(new Point(880, 460), (new Vector2(acaLogo.Width, acaLogo.Height) * scale).ToPoint()), Color.White);
 
