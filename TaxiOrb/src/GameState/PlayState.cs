@@ -1,107 +1,146 @@
 ﻿namespace TaxiOrb.GameState
 {
+	using System;
+
 	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Graphics;
- 
+	using System.Collections.Generic;
+	using System.Linq;
 
 	public class PlayState : GameState
-    {
-        private readonly GraphicsDeviceManager graphics;
-        BasicEffect effect;
-        VertexPositionTexture[] floorVerts;
+	{
 
-        
+		private PlayerOrb player;
+		private List<CollectorOrb> collectorOrbs;
+		private Ground ground;
 
-        //Copied from Tutorial => NOT ALTERED YET
-        private Matrix world = Matrix.CreateTranslation(new Vector3(0, 0, 0));
-        private Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, 10), new Vector3(0, 0, 0), Vector3.UnitY);
-        private Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), 800f / 480f, 0.1f, 100f);
-        
+		private int collectedCounter = 0;
+
+		private TimeSpan countdown;
+
+		private const int BOUNDS = 20;
+
+		private Random _randomGen;
+
         public PlayState(Game game) : base(game)
 		{
-            effect = new BasicEffect(game.GraphicsDevice);
-            
-            floorVerts = new VertexPositionTexture[6];
-            floorVerts[0].Position = new Vector3(-20, -20, 0);
-            floorVerts[1].Position = new Vector3(-20, 20, 0);
-            floorVerts[2].Position = new Vector3(20, -20, 0);
-            floorVerts[3].Position = floorVerts[1].Position;
-            floorVerts[4].Position = new Vector3(20, 20, 0);
-            floorVerts[5].Position = floorVerts[2].Position;
-           
-    }
+			_randomGen = new Random();
+			ground = new Ground(game);
+            player = new PlayerOrb(new Vector2(0,0), game, Resources.TaxiOrb, this);
+			collectorOrbs = new List<CollectorOrb>();
+			generateCollectors(5);
+			countdown = new TimeSpan(0, 0, 31);
+		}
 
-		public override void Update(GameTime gameTime)
+	    public override void Update(GameTime gameTime)
+	    {
+		    if (collectorOrbs.Count < 5)
+		    {
+				generateCollectors(5 - collectorOrbs.Count);
+		    }
+
+			player.Update(gameTime);
+		    foreach (var orb in collectorOrbs)
+		    {
+			    orb.Update(gameTime, player);
+		    }
+
+		    collectorOrbs = collectorOrbs.Where(o => !o.IsFinished).ToList();
+
+
+		    countdown -= gameTime.ElapsedGameTime;
+
+		    if (countdown.TotalMilliseconds <= 0)
+		    {
+				TriggerEnd("Time is up", Color.Gray);
+		    }
+	    }
+
+		public void TriggerEnd(string reason, Color color)
 		{
-
-        }
-
-        //Copied from Tutorial => NOT ALTERED YET
-         private void DrawModel(Model taxiOrb, Matrix world, Matrix view, Matrix projection)
-         {
-             foreach (ModelMesh mesh in taxiOrb.Meshes)
-             {
-                 foreach (BasicEffect effect in mesh.Effects)
-                 {
-                    effect.EnableDefaultLighting();
-
-                     effect.World = world;
-                     effect.View = view;
-                     effect.Projection = projection;
-                 }
-
-                 mesh.Draw();
-             }
-         }
-     
- 
-
-        void DrawGround()
-        {
-            // The assignment of effect.View and effect.Projection
-            // are nearly identical to the code in the Model drawing code.
-            var cameraPosition = new Vector3(15, 10, 10);
-            var cameraLookAtVector = Vector3.Zero;
-            var cameraUpVector = Vector3.UnitZ;
-
-            effect.View = Matrix.CreateLookAt(
-                cameraPosition, cameraLookAtVector, cameraUpVector);
-
-            float aspectRatio = game.GraphicsDevice.Viewport.AspectRatio;
-          
-            float fieldOfView = Microsoft.Xna.Framework.MathHelper.PiOver4;
-            float nearClipPlane = 1;
-            float farClipPlane = 200;
-
-            effect.Projection = Matrix.CreatePerspectiveFieldOfView(
-                fieldOfView, aspectRatio, nearClipPlane, farClipPlane);
-
-
-            foreach (var pass in effect.CurrentTechnique.Passes)
-            {
-                pass.Apply();
-
-                game.GraphicsDevice.DrawUserPrimitives(
-                    // We’ll be rendering two trinalges
-                    PrimitiveType.TriangleList,
-                    // The array of verts that we want to render
-                    floorVerts,
-                    // The offset, which is 0 since we want to start 
-                    // at the beginning of the floorVerts array
-                    0,
-                    // The number of triangles to draw
-                    2);
-            }
-        }
+			NextState = new EndState(game, collectedCounter, reason, color);
+			Finished = true;
+		}
 
         public override void Draw(SpriteBatch spriteBatch)
-		{
-			game.GraphicsDevice.Clear(Color.Blue);
-           // DrawGround();
-           DrawModel(Resources.taxiOrb, world, view, projection);
-           DrawModel(Resources.collectorOrb, world, view, projection);
-          
+        {
+	        game.GraphicsDevice.Clear(Color.Blue);
+
+			var camPos = new Vector3(-35,35,30);
+			//var camPos = new Vector3(-40, 0, 40);
+
+			spriteBatch.Begin();
+			spriteBatch.Draw(Resources.backround, new Rectangle(0,0,1280,720 ), Color.White);
+			spriteBatch.End();
+
+	        game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+
+	        ground.DrawGround(camPos, game);
+
+			foreach (var orb in collectorOrbs)
+	        {
+		        orb.Draw(camPos, game.GraphicsDevice.Viewport.AspectRatio);
+	        }
+	        player.Draw(spriteBatch, game.GraphicsDevice.Viewport.AspectRatio, camPos);
+
+			DrawOverlay(spriteBatch);
 
         }
+
+		private void DrawOverlay(SpriteBatch spriteBatch)
+		{
+			spriteBatch.Begin();
+
+			spriteBatch.DrawString(Resources.Font, "Time: " + countdown.ToString(@"mm\:ss"), new Vector2(20), Color.White);
+			spriteBatch.DrawString(Resources.Font, "Collected: " + collectedCounter.ToString(), new Vector2(1080, 20), Color.White);
+
+			spriteBatch.End();
+		}
+
+		private void generateCollectors(int count)
+		{
+			for (var i = 0; i < count; i++)
+			{
+				var newOrb = new CollectorOrb(GetNewPosition(), Resources.TaxiOrb, this, game);
+				if(_randomGen.NextDouble() < 0.27)
+					newOrb.SetDangerous(_randomGen.Next(0, 8));
+				collectorOrbs.Add(newOrb);
+			}
+		}
+
+		private Vector3 GetNewPosition()
+		{
+
+			Vector3 newVec;
+
+			do
+			{
+				var xPosNeg = _randomGen.Next() % 2 == 0;
+				var yPosNeg = _randomGen.Next() % 2 == 0;
+
+				newVec = new Vector3((float) _randomGen.NextDouble() * BOUNDS * (xPosNeg ? 1 : -1),
+					(float) _randomGen.NextDouble() * BOUNDS * (yPosNeg ? 1 : -1), 0.5f);
+			} while (!CheckDistances(newVec));
+
+			return newVec;
+		}
+
+		private bool CheckDistances(Vector3 check)
+		{
+			if ((player.Position - check).Length() < 5)
+				return false;
+			foreach (var orb in collectorOrbs)
+			{
+				if ((orb.Position - check).Length() < 5)
+					return false;
+			}
+
+			return true;
+		}
+
+		public void IncScore()
+		{
+			collectedCounter++;
+		}
 	}
 }

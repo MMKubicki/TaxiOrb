@@ -12,25 +12,31 @@ namespace TaxiOrb.GameState
   public  class EndState : GameState
     {
         private KeyboardState _oldState;
- 
 
+	    private string _reason;
+	    private int _score;
+	    private Color _screenColor;
 
-        public EndState(Game game) : base(game)
+        public EndState(Game game, int score, string reason, Color screenColor) : base(game)
         {
             _oldState = Keyboard.GetState();
-     
+	        _score = score;
+	        _reason = reason;
+	        _screenColor = screenColor;
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            game.GraphicsDevice.Clear(Color.Gray);
+            game.GraphicsDevice.Clear(_screenColor);
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            DrawButton(spriteBatch, "Restart Game", true, new Vector2(20, 610));
+            DrawButton(spriteBatch, "Back to Main Menu", true, new Vector2(20, 610));
            
-            spriteBatch.DrawString(Resources.Font, "Score ", new Vector2(100, 200), Color.Black);
+			spriteBatch.DrawString(Resources.Font, _reason, new Vector2(100), Color.White.Minus(_screenColor));
+            spriteBatch.DrawString(Resources.Font, $"Score: {_score}", new Vector2(100, 200), Color.White.Minus(_screenColor));
 
             var acaLogo = Resources.AcaLogo;
             var scale = 0.25f;
+
             spriteBatch.Draw(acaLogo, new Rectangle(new Point(880, 460), (new Vector2(acaLogo.Width, acaLogo.Height) * scale).ToPoint()), Color.White);
 
             spriteBatch.End();

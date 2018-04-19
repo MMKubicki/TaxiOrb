@@ -75,11 +75,7 @@
 						break;
 
 					case HighlightedButton.Credits:
-#if DEBUG 
-                     NextState = new EndState(game);
-#else
                         NextState = new CreditState(game, this);
-#endif             
                         Updatable = false;
 
 						break;
@@ -95,9 +91,22 @@
 
 			spriteBatch.Begin();
 
-			DrawButton(spriteBatch, "Play", _currentButton == HighlightedButton.Play, new Vector2(20, 20));
-			DrawButton(spriteBatch, "Exit", _currentButton == HighlightedButton.End, new Vector2(20, 120));
+			DrawButton(spriteBatch, "Play", _currentButton == HighlightedButton.Play, new Vector2(20, 120));
+			DrawButton(spriteBatch, "Exit", _currentButton == HighlightedButton.End, new Vector2(20, 220));
 			DrawButton(spriteBatch, "Credits", _currentButton == HighlightedButton.Credits, new Vector2(20, 610));
+
+			//TODO: Draw GameLogo
+
+			spriteBatch.DrawString(Resources.Font, "TaxiOrb", new Vector2(game.GraphicsDevice.Viewport.Width/2 - Resources.Font.MeasureString("TaxiOrb").X/2, 20), Color.White);
+
+			spriteBatch.DrawString(Resources.Font, "Collect as many Orbs as possible\n" +
+			                                       "Be careful with the hot ones!\n" +
+			                                       "\n" +
+			                                       "\n" +
+			                                       "Move with WASD or the arrow keys\n" +
+			                                       "Space or Enter to accept\n" +
+			                                       "Quickexit with Escape",
+				new Vector2(800, 120), Color.White);
 
 			spriteBatch.End();
 		}

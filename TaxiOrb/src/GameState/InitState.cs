@@ -25,7 +25,7 @@
 #if DEBUG
 		private const int MinMillisecondsLoading = 100;
 #else
-		private const int MinMillisecondsLoading = 4000;
+		private const int MinMillisecondsLoading = 2000;
 #endif
 
 
@@ -82,10 +82,8 @@
 			Resources.AcaLogo = game.Content.Load<Texture2D>("acaLogo");
 
             //Loading Models
-            Resources.taxiOrb = game.Content.Load<Model>("taxiOrbModell");
-            Resources.collectorOrb = game.Content.Load<Model>("collectorOrbModell");
+            Resources.TaxiOrb = game.Content.Load<Model>("taxiOrb");
             Resources.backround = game.Content.Load<Texture2D>("backround");
-
 
             await minWaitTime.ConfigureAwait(true);
 
