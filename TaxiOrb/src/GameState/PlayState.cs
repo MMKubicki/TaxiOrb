@@ -21,6 +21,7 @@
 		private const int Bounds = 20;
 
 		private readonly Random _randomGen;
+		private readonly Vector3 _cameraPosition;
 
         public PlayState(Game game) : base(game)
 		{
@@ -30,6 +31,7 @@
 			_collectorOrbs = new List<CollectorOrb>();
 			GenerateCollectors(5);
 			_countdown = new TimeSpan(0, 0, 31);
+			_cameraPosition = new Vector3(-35, 35, 30);
 		}
 
 	    public override void Update(GameTime gameTime)
@@ -64,23 +66,25 @@
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-	        game.GraphicsDevice.Clear(Color.Blue);
+	        game.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-			var camPosition = new Vector3(-35,35,30);
+			
 
 			spriteBatch.Begin();
-			spriteBatch.Draw(Resources.Background, new Rectangle(0,0,1280,720 ), Color.White);
+			spriteBatch.Draw(Resources.Background, new Rectangle(0,0,game.GraphicsDevice.Viewport.Width, game.GraphicsDevice.Viewport.Height ), Color.White);
 			spriteBatch.End();
 
 	        game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-	        _ground.DrawGround(camPosition, game);
 
 			foreach (var orb in _collectorOrbs)
 	        {
-		        orb.Draw(camPosition, game.GraphicsDevice.Viewport.AspectRatio);
+		        orb.Draw(_cameraPosition, game.GraphicsDevice.Viewport.AspectRatio);
 	        }
-	        _player.Draw(spriteBatch, game.GraphicsDevice.Viewport.AspectRatio, camPosition);
+	        _player.Draw(spriteBatch, game.GraphicsDevice.Viewport.AspectRatio, _cameraPosition);
+
+
+	        _ground.DrawGround(_cameraPosition, game);
 
 			DrawOverlay(spriteBatch);
 

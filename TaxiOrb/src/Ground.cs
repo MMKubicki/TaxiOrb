@@ -39,29 +39,28 @@
 
 			var indices = new short[18];
 			indices[0] = 0;
-			indices[1] = 1;
-			indices[2] = 2;
+			indices[1] = 2;
+			indices[2] = 1;
 
 			indices[3] = 0;
-			indices[4] = 2;
-			indices[5] = 3;
+			indices[4] = 3;
+			indices[5] = 2;
 
-			indices[6] = 4;
-			indices[7] = 6;
-			indices[8] = 7;
+			indices[6] = 6;
+			indices[7] = 7;
+			indices[8] = 4;
 
 			indices[9] = 4;
-			indices[10] = 5;
-			indices[11] = 7;
+			indices[10] = 7;
+			indices[11] = 5;
 
-
-			indices[12] = 8;
-			indices[13] = 10;
-			indices[14] = 11;
+			indices[12] = 10;
+			indices[13] = 11;
+			indices[14] = 8;
 
 			indices[15] = 8;
-			indices[16] = 9;
-			indices[17] = 11;
+			indices[16] = 11;
+			indices[17] = 9;
 
 			_indexBuffer = new IndexBuffer(game.GraphicsDevice, typeof(short), indices.Length, BufferUsage.WriteOnly);
 			_indexBuffer.SetData(indices);
@@ -69,6 +68,10 @@
 
 		public void DrawGround(Vector3 camPosition, Game game)
 		{
+
+			game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+			game.GraphicsDevice.BlendState = BlendState.Opaque;
+
 			_world = Matrix.CreateTranslation(0, 0, 0);
 			_view = Matrix.CreateLookAt(camPosition, Vector3.Zero, Vector3.UnitZ);
 			_projection =
@@ -82,7 +85,7 @@
 			game.GraphicsDevice.SetVertexBuffer(_vertexBuffer);
 			game.GraphicsDevice.Indices = _indexBuffer;
 
-			var rasterizerState = new RasterizerState {CullMode = CullMode.None};
+			var rasterizerState = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
 			game.GraphicsDevice.RasterizerState = rasterizerState;
 
 			foreach (var pass in _effect.CurrentTechnique.Passes)

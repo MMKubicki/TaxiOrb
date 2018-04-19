@@ -21,20 +21,22 @@
 
 		private KeyboardState _oldState;
 
-   
-    
+		public GameMain() : this(1280, 720)
+		{ }
 
-		public GameMain()
+		public GameMain(int width, int height)
 		{
 			_graphics = new GraphicsDeviceManager(this)
 			{
-				PreferredBackBufferHeight = 720,
-				PreferredBackBufferWidth = 1280,
+				PreferredBackBufferHeight = height,
+				PreferredBackBufferWidth = width,
 				SynchronizeWithVerticalRetrace = true
 			};
 
 			Content.RootDirectory = "Content";
 		}
+
+
 
 		/// <summary>
 		/// Allows the game to perform any initialization it needs to before starting to run.
