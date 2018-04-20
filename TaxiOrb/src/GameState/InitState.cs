@@ -78,12 +78,10 @@
 		{
 			var minWaitTime = Task.Run(() => Thread.Sleep(MinMillisecondsLoading));
 
-			//TODO: Load Content, Write Content to CollectionClass
 			Resources.AcaLogo = game.Content.Load<Texture2D>("acaLogo");
-
-            //Loading Models
-            Resources.TaxiOrb = game.Content.Load<Model>("taxiOrb");
-            Resources.backround = game.Content.Load<Texture2D>("backround");
+			Resources.TaxiOrb = game.Content.Load<Model>("taxiOrb");
+            Resources.Background = game.Content.Load<Texture2D>("background");
+			Resources.Font22 = game.Content.Load<SpriteFont>("font22");
 
             await minWaitTime.ConfigureAwait(true);
 

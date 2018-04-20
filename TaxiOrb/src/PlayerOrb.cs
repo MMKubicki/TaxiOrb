@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TaxiOrb
+﻿namespace TaxiOrb
 {
 	using GameState;
 
@@ -14,75 +8,87 @@ namespace TaxiOrb
 
 	public class PlayerOrb
 	{
-		private Game _game;
-
 		public Vector3 Position;
 		public Model Model;
 
-		private PlayState _parentPlayState;
+		private readonly PlayState _parentPlayState;
 
-		private float _speed;
+		private readonly float _speed;
 		private Vector3 _movement;
 
-		public PlayerOrb(Vector2 startPos, Game game, Model model, PlayState parent)
+
+		private Vector3 _moveUp;
+		private Vector3 _moveDown;
+		private Vector3 _moveLeft;
+		private Vector3 _moveRight;
+
+		public PlayerOrb(Vector2 startPosition, Model model, PlayState parent)
 		{
-			_game = game;
-			Position = new Vector3(startPos.X, startPos.Y, 0.5f);
+			Position = new Vector3(startPosition.X, startPosition.Y, 0.5f);
 			Model = model;
 			_speed = 0.55f;
 			_movement = new Vector3(0);
 			_parentPlayState = parent;
+
+			_moveUp = new Vector3(1,-1,0);
+			_moveUp.Normalize();
+			_moveDown = new Vector3(-1, 1, 0);
+			_moveDown.Normalize();
+			_moveLeft = new Vector3(1,1,0);
+			_moveLeft.Normalize();
+			_moveRight = new Vector3(-1,-1,0);
+			_moveRight.Normalize();
 		}
 
 		public void Update(GameTime gameTime)
 		{
 			var keystate = Keyboard.GetState();
-			if(keystate.IsKeyDown(Keys.W) || keystate.IsKeyDown(Keys.Up))
-				_movement += new Vector3(1, -1,0) * (float)gameTime.ElapsedGameTime.TotalSeconds * _speed;
-			if (keystate.IsKeyDown(Keys.S) || keystate.IsKeyDown(Keys.Down))
-				_movement += new Vector3(-1, 1, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * _speed;
-			if (keystate.IsKeyDown(Keys.A) || keystate.IsKeyDown(Keys.Left))
-				_movement += new Vector3(1, 1, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * _speed;
-			if (keystate.IsKeyDown(Keys.D) || keystate.IsKeyDown(Keys.Right))
-				_movement += new Vector3(-1, -1, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * _speed;
 
-			var tempPos = Position + _movement;
-			if (tempPos.X >= 20.2f)
+			if(keystate.IsKeyDown(Keys.W) || keystate.IsKeyDown(Keys.Up))
+				_movement += _moveUp * (float)gameTime.ElapsedGameTime.TotalSeconds * _speed;
+			if (keystate.IsKeyDown(Keys.S) || keystate.IsKeyDown(Keys.Down))
+				_movement += _moveDown * (float)gameTime.ElapsedGameTime.TotalSeconds * _speed;
+			if (keystate.IsKeyDown(Keys.A) || keystate.IsKeyDown(Keys.Left))
+				_movement += _moveLeft * (float)gameTime.ElapsedGameTime.TotalSeconds * _speed;
+			if (keystate.IsKeyDown(Keys.D) || keystate.IsKeyDown(Keys.Right))
+				_movement += _moveRight * (float)gameTime.ElapsedGameTime.TotalSeconds * _speed;
+
+			var tempPosition = Position + _movement;
+			if (tempPosition.X >= 20.2f)
 			{
 				_movement.X = -_movement.X;
 			}
-			else if (tempPos.Y <= -20.2f)
+			else if (tempPosition.Y <= -20.2f)
 			{
 				_movement.Y = -_movement.Y;
 			}
-			else if (tempPos.X <= -20.5f)
+			else if (tempPosition.X <= -20.5f)
 			{
-				_parentPlayState.TriggerEnd("Fell out of arena", new Color(217, 72, 95));
+				_parentPlayState.TriggerEnd("Fell out of the arena", Color.Red);
 			}
-			else if (tempPos.Y >= 20.5f)
+			else if (tempPosition.Y >= 20.5f)
 			{
-				_parentPlayState.TriggerEnd("Fell out of arena", new Color(217, 72, 95));
+				_parentPlayState.TriggerEnd("Fell out of the arena", Color.Red);
 			}
 
 			Position += _movement;
 		}
 
-		public void Draw(SpriteBatch spriteBatch, float aspectRatio, Vector3 camPos)
+		public void Draw(SpriteBatch spriteBatch, float aspectRatio, Vector3 camPosition)
 		{
 			foreach (var mesh in Model.Meshes)
 			{
-				foreach (BasicEffect effect in mesh.Effects)
+				foreach (var effect1 in mesh.Effects)
 				{
+					var effect = (BasicEffect) effect1;
 					effect.EnableDefaultLighting();
 					effect.PreferPerPixelLighting = true;
 
-					//effect.AmbientLightColor = new Vector3(0.75f,0,0.2f);
 					effect.DiffuseColor = new Vector3(1 , 0.9f , 0.2f);
 
 					effect.World = GetWorldMatrix();
 
-					effect.View = Matrix.CreateLookAt(camPos, Vector3.Zero, Vector3.UnitZ);
-					//effect.View
+					effect.View = Matrix.CreateLookAt(camPosition, Vector3.Zero, Vector3.UnitZ);
 
 					effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspectRatio, 0.1f, 2000);
 				}
@@ -92,7 +98,7 @@ namespace TaxiOrb
 
 		}
 
-		Matrix GetWorldMatrix()
+		private Matrix GetWorldMatrix()
 		{
 			var translationMatrix = Matrix.CreateTranslation(Position);
 

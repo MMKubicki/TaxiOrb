@@ -95,9 +95,8 @@
 			DrawButton(spriteBatch, "Exit", _currentButton == HighlightedButton.End, new Vector2(20, 220));
 			DrawButton(spriteBatch, "Credits", _currentButton == HighlightedButton.Credits, new Vector2(20, 610));
 
-			//TODO: Draw GameLogo
+			spriteBatch.DrawString(Resources.Font22, "TaxiOrb", new Vector2(game.GraphicsDevice.Viewport.Width/2f - Resources.Font22.MeasureString("TaxiOrb").X/2, 20).ToPoint().ToVector2(), Color.White);
 
-			spriteBatch.DrawString(Resources.Font, "TaxiOrb", new Vector2(game.GraphicsDevice.Viewport.Width/2 - Resources.Font.MeasureString("TaxiOrb").X/2, 20), Color.White);
 
 			spriteBatch.DrawString(Resources.Font, "Collect as many Orbs as possible\n" +
 			                                       "Be careful with the hot ones!\n" +

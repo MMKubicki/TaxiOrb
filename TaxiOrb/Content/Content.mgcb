@@ -25,7 +25,7 @@
 /processorParam:TextureFormat=Color
 /build:acaLogo.png
 
-#begin backround.jpg
+#begin background.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,7 +35,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:backround.jpg
+/build:background.jpg
 
 #begin font16.spritefont
 /importer:FontDescriptionImporter
@@ -43,6 +43,13 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:font16.spritefont
+
+#begin font22.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:font22.spritefont
 
 #begin taxiOrb.fbx
 /importer:FbxImporter
