@@ -32,7 +32,7 @@
 				PreferredBackBufferWidth = width,
 				SynchronizeWithVerticalRetrace = true
 			};
-
+			this.Window.Title = "TaxiOrb";
 			Content.RootDirectory = "Content";
 		}
 

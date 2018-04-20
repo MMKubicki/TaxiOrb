@@ -51,7 +51,7 @@
 			var thisVector2 = new Vector2(@this.X, @this.Y);
 			var thatVector2 = new Vector2(that.X, that.Y);
 
-			return (thisVector2 - thatVector2).Length() < 1.5f;
+			return (thisVector2 - thatVector2).Length() < 1.7f;
 		}
 
 		public void Draw(Vector3 camPosition, float aspectRatio)

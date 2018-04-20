@@ -94,7 +94,7 @@
 		{
 			spriteBatch.Begin();
 
-			spriteBatch.DrawString(Resources.Font, "Time: " + _countdown.ToString(@"mm\:ss"), new Vector2(20), Color.White);
+			spriteBatch.DrawString(Resources.Font, "Time: " + _countdown.ToString(@"ss") + "s", new Vector2(20), Color.White);
 			spriteBatch.DrawString(Resources.Font, "Collected: " + _collectedCounter.ToString(), new Vector2(1080, 20), Color.White);
 
 			spriteBatch.End();
@@ -106,7 +106,7 @@
 			{
 				var newOrb = new CollectorOrb(GetNewPosition(), Resources.TaxiOrb, this);
 				if(_randomGen.NextDouble() < 0.27)
-					newOrb.SetDangerous(_randomGen.Next(0, 8));
+					newOrb.SetDangerous(_randomGen.Next(0, 10));
 				_collectorOrbs.Add(newOrb);
 			}
 		}
