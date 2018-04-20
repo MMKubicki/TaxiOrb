@@ -7,6 +7,8 @@
 	using System.Collections.Generic;
 	using System.Linq;
 
+	using Microsoft.Xna.Framework.Input;
+
 	public class PlayState : GameState
 	{
 
@@ -23,6 +25,8 @@
 		private readonly Random _randomGen;
 		private readonly Vector3 _cameraPosition;
 
+		private KeyboardState _oldState;
+
         public PlayState(Game game) : base(game)
 		{
 			_randomGen = new Random();
@@ -32,10 +36,12 @@
 			GenerateCollectors(5);
 			_countdown = new TimeSpan(0, 0, 31);
 			_cameraPosition = new Vector3(-35, 35, 30);
+			_oldState = Keyboard.GetState();
 		}
 
 	    public override void Update(GameTime gameTime)
 	    {
+		    var keystate = Keyboard.GetState();
 		    if (_collectorOrbs.Count < 5)
 		    {
 				GenerateCollectors(5 - _collectorOrbs.Count);
@@ -56,6 +62,14 @@
 		    {
 				TriggerEnd("Time is up", Color.Gray);
 		    }
+
+		    if (keystate.IsKeyUp(Keys.P) && _oldState.IsKeyDown(Keys.P))
+		    {
+			    Finished = true;
+				NextState = new MainMenuState(game);
+		    }
+
+		    _oldState = keystate;
 	    }
 
 		public void TriggerEnd(string reason, Color color)
